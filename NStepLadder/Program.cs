@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace NStepLadder
 {
@@ -53,26 +54,33 @@ namespace NStepLadder
             x.Set = array;
             var node = new NodeData() { CurrentSum = 0, index = 0, path = new List<int>() };
             x.Node(node);
-            return x.counter;
+            var goodNodes = x.possibleCombinationOfNodes.Where(y => y.CurrentSum == x.Sum).ToList();
+            var goodPaths = new List<string>();
+
+            foreach (var item in goodNodes)
+            {
+                goodPaths.Add(x.ArrayToString(item.path.ToArray()));
+            }
+
+            var uniquegoodPath = goodPaths.Distinct();
+            foreach (var item in uniquegoodPath)
+            {
+                System.Console.WriteLine(item);
+            }
+
+
+            return uniquegoodPath.Count();
         }
 
         private void Node(NodeData node)
         {
-            Console.WriteLine($"{node.CurrentSum} {node.index} {node.path.ToArray()}");
-
-            //failed
-            if (node.CurrentSum > Sum)
-            {
-                return;
-            }
-            //pass condition
-            if (node.CurrentSum == Sum)
-            {
-                counter++;
-                return;
-            }
-
+            //Console.WriteLine($"{node.CurrentSum} {node.index} - {ArrayToString(node.path.ToArray())}");
             possibleCombinationOfNodes.Add(node);
+
+            if (CheckFeasability(node) == false)
+            {
+                return;
+            }
 
 
             //make branch
@@ -94,8 +102,8 @@ namespace NStepLadder
                     path = node.path.ToList()
                 };
 
-                Node(nodeInc); //include
-                Node(nodeExc); //exclude 
+                MakeBranchThread(nodeInc); //include
+                MakeBranchThread(nodeExc); //exclude 
             }
 
             //this branch to check recursively
@@ -120,13 +128,54 @@ namespace NStepLadder
 
         }
 
+        private void MakeBranchThread(NodeData node)
+        {
+            var t = new Thread(() =>
+            {
+                Node(node);
+            });
+            t.Start();
+            t.Join();
+
+        }
+
+        private bool CheckFeasability(NodeData node)
+        {
+            //failed
+            if (node.CurrentSum > Sum)
+            {
+                return false;
+            }
+            //pass condition
+            if (node.CurrentSum == Sum)
+            {
+                counter++;
+                return false;
+            }
+            return true;
+        }
+
         private void CallRecursive(NodeData nodeData)
         {
-            var c = possibleCombinationOfNodes.Where(x => x.CurrentSum == nodeData.CurrentSum && x.index == nodeData.index && x.path.ToArray() == nodeData.path.ToArray()).Count();
+            var c = possibleCombinationOfNodes.Where(x =>
+            x.CurrentSum == nodeData.CurrentSum &&
+              x.index == nodeData.index &&
+              ArrayToString(x.path.ToArray()) == ArrayToString(nodeData.path.ToArray())).Count();
             if (c == 0)
             {
-                Node(nodeData);
+                MakeBranchThread(nodeData);
             }
+        }
+
+        private string ArrayToString(int[] arr)
+        {
+            var s = "";
+            foreach (var item in arr)
+            {
+                s += Set[item].ToString() + ",";
+            }
+            s.TrimEnd(',');
+            return s;
         }
     }
 }
