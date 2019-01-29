@@ -6,84 +6,104 @@ using System.Threading;
 
 namespace NStepLadder
 {
-    //internal class NStepLadder
-    //{
-    //    private readonly int[] Climbs; //this stores x
-
-    //    private List<int[]> PossibleWays = new List<int[]>();
-    //    private int Sum;
-
-    //    public NStepLadder(int[] climbs, int sum)
-    //    {
-    //        Climbs = climbs;
-    //        Sum = sum;
-    //    }
-
-    //    private bool CanMakeToN(int sum)
-    //    {
-    //        return SumOfSubset.isSumOfSubset(Climbs.ToArray(), Sum);
-    //    }
-
-    //    private void Node(List<int> stepsTaken)
-    //    {
-
-    //    }
-    //}
-
-
-
-    internal class SumOfSubset
+    internal class NStepLadder
     {
         private int Sum;
         private int[] Set;
-        private int counter = 0;
+        public NStepLadder(int[] set, int sum)
+        {
+            Sum = sum;
+            Set = set;
+        }
 
         private struct NodeData
         {
             internal int CurrentSum;
             internal int index;
             internal List<int> path;
+
+            internal bool Compare(NodeData node) =>
+                ArrayToString(this.path) == ArrayToString(node.path) &&
+                this.index == node.index;
         }
 
-        private List<NodeData> possibleCombinationOfNodes = new List<NodeData>();
+        private List<NodeData> TravelledCombination = new List<NodeData>();
 
-        public static int isSumOfSubset(int[] array, int sum)
+        public static int PossiblePaths(int[] array, int sum)
         {
-            var x = new SumOfSubset();
-            x.Sum = sum;
-            x.Set = array;
-            var node = new NodeData() { CurrentSum = 0, index = 0, path = new List<int>() };
-            x.Node(node);
-            var goodNodes = x.possibleCombinationOfNodes.Where(y => y.CurrentSum == x.Sum).ToList();
+            var x = new NStepLadder(array, sum);
+
+            //start calculation
+            x.StartNStep();
+            //caluclation ended
+
+            return x.GetCombination().Count();
+        }
+
+        public IEnumerable<string> GetCombination()
+        {
             var goodPaths = new List<string>();
 
-            foreach (var item in goodNodes)
+            foreach (var item in TravelledCombination.Where(y => y.CurrentSum == Sum))
             {
-                goodPaths.Add(x.ArrayToString(item.path.ToArray()));
+                goodPaths.Add(ArrayToString(item.path, Set));
             }
 
+            //because index can be different so we have to refilter
+            //should work without distint if lock enabled below
             var uniquegoodPath = goodPaths.Distinct();
-            foreach (var item in uniquegoodPath)
+
+            PrintCombinations();
+
+            return uniquegoodPath;
+
+            void PrintCombinations()
             {
-                System.Console.WriteLine(item);
+                foreach (var item in uniquegoodPath)
+                {
+                    System.Console.WriteLine(item);
+                }
             }
+        }
 
-
-            return uniquegoodPath.Count();
+        public void StartNStep()
+        {
+            //initial node
+            var node = new NodeData() { CurrentSum = 0, index = 0, path = new List<int>() };
+            NewBranch(node);
         }
 
         private void Node(NodeData node)
         {
-            //Console.WriteLine($"{node.CurrentSum} {node.index} - {ArrayToString(node.path.ToArray())}");
-            possibleCombinationOfNodes.Add(node);
-
             if (CheckFeasability(node) == false)
             {
                 return;
             }
+            MakeBranches(node);
+        }
 
+        private void MakeBranches(NodeData node)
+        {
+            MakeForwardBranch(node);
+            MakeBranchFromZero(node);
+        }
 
-            //make branch
+        private void MakeBranchFromZero(NodeData node)
+        {
+            //this branch to start from index zero
+            var nodeZero = new NodeData()
+            {
+                CurrentSum = node.CurrentSum + Set[node.index], //include
+                index = 0,
+                path = node.path.ToList()
+            };
+            nodeZero.path.Add(node.index);
+
+            NewBranch(nodeZero);
+        }
+
+        private void MakeForwardBranch(NodeData node)
+        {
             if (node.index + 1 < Set.Length)
             {
                 var nodeInc = new NodeData()
@@ -94,7 +114,6 @@ namespace NStepLadder
                 };
                 nodeInc.path.Add(node.index);
 
-
                 var nodeExc = new NodeData()
                 {
                     CurrentSum = node.CurrentSum,
@@ -102,33 +121,12 @@ namespace NStepLadder
                     path = node.path.ToList()
                 };
 
-                MakeBranchThread(nodeInc); //include
-                MakeBranchThread(nodeExc); //exclude 
+                NewBranch(nodeInc);
+                NewBranch(nodeExc);
             }
-
-            //this branch to check recursively
-            var nodeIncR = new NodeData()
-            {
-                CurrentSum = node.CurrentSum + Set[node.index],
-                index = 0,
-                path = node.path.ToList()
-            };
-            nodeIncR.path.Add(node.index);
-
-
-            var nodeExcR = new NodeData()
-            {
-                CurrentSum = node.CurrentSum,
-                index = 0,
-                path = node.path.ToList()
-            };
-
-            CallRecursive(nodeIncR);
-            CallRecursive(nodeExcR);
-
         }
 
-        private void MakeBranchThread(NodeData node)
+        private void NewBranch(NodeData node)
         {
             var t = new Thread(() =>
             {
@@ -138,43 +136,50 @@ namespace NStepLadder
             t.Join();
 
         }
-
         private bool CheckFeasability(NodeData node)
         {
-            //failed
+            //already travelled
+            if (isNodeExecuted(node))
+            {
+                return false;
+            }
+
+            //Console.WriteLine($"{node.CurrentSum} {node.index} - {ArrayToString(node.path.ToArray())}");
+            TravelledCombination.Add(node);
+
+            //fail condition
             if (node.CurrentSum > Sum)
             {
                 return false;
             }
+
             //pass condition
             if (node.CurrentSum == Sum)
             {
-                counter++;
                 return false;
             }
             return true;
         }
 
-        private void CallRecursive(NodeData nodeData)
+        private bool isNodeExecuted(NodeData node)
         {
-            var c = possibleCombinationOfNodes.Where(x =>
-            x.CurrentSum == nodeData.CurrentSum &&
-              x.index == nodeData.index &&
-              ArrayToString(x.path.ToArray()) == ArrayToString(nodeData.path.ToArray())).Count();
-            if (c == 0)
+            var c = TravelledCombination.Where(x => x.Compare(node));
+            if (c.Count() > 0)
             {
-                MakeBranchThread(nodeData);
+                //if combination found
+                return true;
             }
+            return false;
         }
 
-        private string ArrayToString(int[] arr)
+        private static string ArrayToString(IEnumerable<int> arr, int[] set = null)
         {
             var s = "";
             foreach (var item in arr)
             {
-                s += Set[item].ToString() + ",";
+                s += (set != null ? set[item] : item) + ",";
             }
-            s.TrimEnd(',');
+            s = s.TrimEnd(',');
             return s;
         }
     }
