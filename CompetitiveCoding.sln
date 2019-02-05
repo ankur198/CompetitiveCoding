@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnyPairSum", "AnyPairSum\AnyPairSum.csproj", "{AB58E2C9-B51A-4A5C-96C0-8F4502372742}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NStepLadder", "NStepLadder\NStepLadder.csproj", "{A3717F38-4DE1-4A58-9D70-93AA767525C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NStepLadder", "NStepLadder\NStepLadder.csproj", "{A3717F38-4DE1-4A58-9D70-93AA767525C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageDecoding", "MessageDecoding\MessageDecoding.csproj", "{8CC73F1B-878A-451E-91FB-879D610D2303}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A3717F38-4DE1-4A58-9D70-93AA767525C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3717F38-4DE1-4A58-9D70-93AA767525C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3717F38-4DE1-4A58-9D70-93AA767525C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CC73F1B-878A-451E-91FB-879D610D2303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CC73F1B-878A-451E-91FB-879D610D2303}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CC73F1B-878A-451E-91FB-879D610D2303}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CC73F1B-878A-451E-91FB-879D610D2303}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
