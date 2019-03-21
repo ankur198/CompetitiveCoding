@@ -1,4 +1,5 @@
 ﻿# Problem
+
 An alien robot is threatening the universe, using a beam that will destroy all algorithms knowledge. We have to stop it!
 
 Fortunately, we understand how the robot works. It starts off with a beam with a strength of 1, and it will run a program that is a series of instructions, which will be executed one at a time, in left to right order. Each instruction is of one of the following two types:
@@ -8,7 +9,7 @@ Fortunately, we understand how the robot works. It starts off with a beam with a
 
 For example, if the robot's program is `SCCSSC`, the robot will do the following when the program runs:
 
-```
+```txt
 Shoot the beam, doing 1 damage.
 Charge the beam, doubling the beam's strength to 2.
 Charge the beam, doubling the beam's strength to 4.
@@ -46,7 +47,7 @@ The robot's program contains either zero or one C characters.
 Test set 2 (Hidden)
 No additional restrictions to the Limits section.
 
-Sample
+## Sample
 
 **Input**
  	
