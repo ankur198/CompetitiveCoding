@@ -4,6 +4,8 @@ using System.Text;
 
 namespace Date_Time
 {
+
+
     public class MyDateTime
     {
         public List<int> RemainingDigits { get; set; }
@@ -51,6 +53,7 @@ namespace Date_Time
 
     public class builder
     {
+
         public List<MyDateTime> selectedDates = new List<MyDateTime>();
         public readonly int[] allDigits;
 
