@@ -39,6 +39,7 @@ def traverse(parentNode):
 
         if parentNode.index < len(origList):
             child1 = Node.copyNode(parentNode)
+
             child2 = Node.copyNode(parentNode)
             child1.add(origList[child1.index])
             child2.add()

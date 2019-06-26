@@ -81,4 +81,4 @@ Hence the number of valid permutations =3, which is the answer.
 
     In the first test case, N=6. 6 has four factors [1,2,3,6]. As in the previous example, there are 11 valid permutations for these. Hence the output for the first test case is 11. This is the first line of the output
 
-    In the second test case, N=9. As was shown in the Illustration in the problem statement, thenumber of valid permutations is 3. Hence the output for the second test case (the second line of the output) is 3.
+    In the second test case, N=9. As was shown in the Illustration in the problem statement, the number of valid permutations is 3. Hence the output for the second test case (the second line of the output) is 3.
