@@ -33,6 +33,7 @@ namespace hopGame
         readonly List<HoppingStone> AllHoppingStones;
 
         public int max = 0;
+        public Path maxp = null;
         public Builder(int[] stones)
         {
             AllHoppingStones = new List<HoppingStone>();
@@ -51,7 +52,12 @@ namespace hopGame
         {
             if (parent.index == AllHoppingStones.Count)
             {
-                max = Math.Max(max, parent.Score);
+                //max = Math.Max(max, parent.Score);
+                if (max < parent.Score)
+                {
+                    max = parent.Score;
+                    maxp = parent;
+                }
             }
 
             else if (isFeasable(parent))
@@ -63,13 +69,17 @@ namespace hopGame
                 child.Score += landedStone.Value;
                 child.index++;
 
+                Traverse(child);
+
                 if (isSingleJumpFeasable(parent))
                 {
                     var child1 = parent.makeCopy();
                     landedStone = AllHoppingStones[child1.index + 1];
                     child1.hoppingStones.Add(landedStone);
-                    child1.Score += 2*landedStone.Value;
+                    child1.Score += 2 * landedStone.Value;
                     child1.index += 2;
+
+                    Traverse(child1);
 
                     if (isDoubleJumpFeasable(parent))
                     {
@@ -77,14 +87,14 @@ namespace hopGame
                         child2.isDoubleJumpAllowed = false;
                         landedStone = AllHoppingStones[child2.index + 2];
                         child2.hoppingStones.Add(landedStone);
-                        child2.Score += 3*landedStone.Value;
+                        child2.Score += 3 * landedStone.Value;
                         child2.index += 3;
 
                         Traverse(child2);
                     }
-                    Traverse(child1);
+                    
                 }
-                Traverse(child);
+                
             }
         }
         bool isFeasable(Path path)
