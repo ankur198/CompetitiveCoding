@@ -18,8 +18,6 @@ namespace Glass_Piece
             shape1.Add(new Point(0, 25));
             matrix.AddShape(shape1);
 
-
-
             List<Point> shape2 = new List<Point>();
             shape2.Add(new Point(20, 0));
             shape2.Add(new Point(40, 0));
@@ -33,7 +31,7 @@ namespace Glass_Piece
             shape3.Add(new Point(40, 20));
             shape3.Add(new Point(40, 40));
             shape3.Add(new Point(20, 40));
-            matrix.AddShape(shape3);
+            //matrix.AddShape(shape3);
 
             List<Point> shape4 = new List<Point>();
             shape4.Add(new Point(0, 25));
@@ -74,6 +72,24 @@ namespace Glass_Piece
             Console.WriteLine($"{sortedPoints[^1]} {sortedPoints[0]} {Point.GetSlope(sortedPoints[^1], sortedPoints[0])}");
 
             Console.WriteLine();
+
+
+            #region DDA Check
+            //foreach (var item in Point.DDA(new Point(40, 20), new Point(25, 10)))
+            //{
+            //    Console.Write($"{item}, ");
+            //}
+            //Console.WriteLine();
+
+            //var y = Point.DDA(new Point(25, 10), new Point(40, 20))
+            //    ;
+            //y.Reverse();
+            //foreach (var item in y)
+            //{
+            //    Console.Write($"{item}, ");
+            //}
+            //Console.WriteLine();
+            #endregion
 
         }
 

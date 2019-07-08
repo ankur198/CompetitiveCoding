@@ -54,7 +54,7 @@ namespace Glass_Piece
             double yinc = dy / (float)step;
             double x = point1.X;
             double y = point1.Y;
-            int i = 1;
+            int i = 0;
 
             while (i <= step)
             {
