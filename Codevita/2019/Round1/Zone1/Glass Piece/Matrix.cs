@@ -77,31 +77,6 @@ namespace Glass_Piece
 
         private int size;
 
-        private IList<Point> DDA(Point point1, Point point2)
-        {
-            List<Point> points = new List<Point>();
-
-            int dx = point2.X - point1.X;
-            int dy = point2.Y - point1.Y;
-            int step = Math.Abs(dx) > Math.Abs(dy) ? Math.Abs(dx) : Math.Abs(dy);
-
-            double xinc = dx / (float)step;
-            double yinc = dy / (float)step;
-            double x = point1.X;
-            double y = point1.Y;
-            int i = 1;
-
-            while (i <= step)
-            {
-                points.Add(new Point((int)Math.Round(x), (int)Math.Round(y)));
-                x += xinc;
-                y += yinc;
-                i += 1;
-            }
-
-            return points;
-        }
-
         private void FillShape()
         {
             for (int i = 0; i < Grid.GetLength(0); i++)
@@ -227,6 +202,7 @@ namespace Glass_Piece
                 if (status)
                 {
                     FinalPoints.Add(item);
+                    FinalPoints = FinalPoints.Distinct().ToList();
                 }
             }
 
@@ -266,7 +242,7 @@ namespace Glass_Piece
 
         private void PutLine(Point point1, Point point2)
         {
-            IList<Point> pos = DDA(point1, point2);
+            IList<Point> pos = Point.DDA(point1, point2);
             foreach (Point item in pos)
             {
                 Grid[item.X, item.Y] = 1;

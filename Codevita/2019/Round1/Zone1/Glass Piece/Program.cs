@@ -5,9 +5,10 @@ namespace Glass_Piece
 {
     internal class Program
     {
+        static Matrix matrix;
         private static void Main(string[] args)
         {
-            Matrix matrix = new Matrix(40);
+            matrix = new Matrix(40);
 
             List<Point> shape1 = new List<Point>();
             shape1.Add(new Point(0, 0));
@@ -48,12 +49,77 @@ namespace Glass_Piece
 
             var x = matrix.MissingPoints;
             x.Sort();
+            //x.Reverse();
+
+            matrix.VisualiseInConsole();
+
+
             foreach (var item in x)
             {
                 Console.WriteLine($"{item.X} {item.Y}");
             }
+            Console.WriteLine();
 
-            matrix.VisualiseInConsole();
+            List<Point> sortedPoints = GetPath(x);
+
+            foreach (var item in sortedPoints)
+            {
+                Console.WriteLine($"{item.X} {item.Y}");
+            }
+
+            for (int i = 0; i < sortedPoints.Count - 1; i++)
+            {
+                Console.WriteLine($"{sortedPoints[i]} {sortedPoints[i + 1]} {Point.GetSlope(sortedPoints[i], sortedPoints[i + 1])}");
+            }
+            Console.WriteLine($"{sortedPoints[^1]} {sortedPoints[0]} {Point.GetSlope(sortedPoints[^1], sortedPoints[0])}");
+
+            Console.WriteLine();
+
+        }
+
+        private static List<Point> GetPath(List<Point> x)
+        {
+            var sortedPoints = new List<Point>();
+            sortedPoints.Add(x[0]);
+            x.RemoveAt(0);
+
+            while (x.Count != 0)
+            {
+                List<Point> DdaPoints = Point.DDA(sortedPoints[^1], x[0]);
+
+                if (IsBorder(DdaPoints))
+                {
+                    sortedPoints.Add(x[0]);
+                    x.RemoveAt(0);
+                }
+                else
+                {
+                    x.Add(x[0]);
+                    x.RemoveAt(0);
+                }
+
+                if (sortedPoints.Count > 2)
+                {
+                    if (Point.GetSlope(sortedPoints[^3], sortedPoints[^2]) == Point.GetSlope(sortedPoints[^2], sortedPoints[^1]))
+                    {
+                        sortedPoints.RemoveAt(sortedPoints.Count - 1);
+                    }
+                }
+            }
+
+            return sortedPoints;
+        }
+
+        private static bool IsBorder(List<Point> ddaPoints)
+        {
+            foreach (var item in ddaPoints)
+            {
+                if (matrix.Grid[item.X, item.Y] == 0 || matrix.Grid[item.X, item.Y] == 9)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

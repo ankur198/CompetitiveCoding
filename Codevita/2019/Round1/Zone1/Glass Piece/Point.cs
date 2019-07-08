@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Glass_Piece
 {
@@ -25,6 +26,56 @@ namespace Glass_Piece
             }
 
             throw new NotImplementedException("Other object is not a Point");
+        }
+
+        public static double GetSlope(Point p1, Point p2)
+        {
+            try
+            {
+                var x = (p1.X - p2.X) / (float)(p1.Y - p2.Y);
+                return x;
+            }
+            catch (Exception)
+            {
+                return 0;
+                throw;
+            }
+        }
+
+        public static List<Point> DDA(Point point1, Point point2)
+        {
+            if (GetSlope(point1, point2) < 1)
+            {
+                var t = point1;
+                point1 = point2;
+                point2 = t;
+            }
+            List<Point> points = new List<Point>();
+
+            int dx = point2.X - point1.X;
+            int dy = point2.Y - point1.Y;
+            int step = Math.Abs(dx) > Math.Abs(dy) ? Math.Abs(dx) : Math.Abs(dy);
+
+            double xinc = dx / (float)step;
+            double yinc = dy / (float)step;
+            double x = point1.X;
+            double y = point1.Y;
+            int i = 1;
+
+            while (i <= step)
+            {
+                points.Add(new Point((int)Math.Round(x), (int)Math.Round(y)));
+                x += xinc;
+                y += yinc;
+                i += 1;
+            }
+
+            return points;
+        }
+
+        public override string ToString()
+        {
+            return string.Format($"{X} {Y}");
         }
     }
 }
