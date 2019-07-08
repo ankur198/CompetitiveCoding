@@ -44,12 +44,6 @@ namespace Glass_Piece
 
         public static List<Point> DDA(Point point1, Point point2)
         {
-            if (GetSlope(point1, point2) < 1)
-            {
-                var t = point1;
-                point1 = point2;
-                point2 = t;
-            }
             List<Point> points = new List<Point>();
 
             int dx = point2.X - point1.X;
