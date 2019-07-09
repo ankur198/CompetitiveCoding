@@ -138,7 +138,10 @@ namespace Glass_Piece
             {
                 Grid[corner.X, corner.Y] = 7;
             }
-            return corners;
+            corners.Sort();
+            var path = GetPath(corners);
+            return path;
+            //return null;
         }
 
         private List<Point> GetBoundaryCornerPoints()
@@ -317,6 +320,88 @@ namespace Glass_Piece
                 isBoundaryPointsComputed = true;
             }
             return boundaryPoints;
+        }
+
+        private bool? IsBorder(List<Point> ddaPoints)
+        {
+            int two = 0, five = 0;
+            foreach (var item in ddaPoints)
+            {
+                if (Grid[item.X, item.Y] == 5 || Grid[item.X, item.Y] == 7)
+                {
+                    five++;
+                }
+                else if (Grid[item.X, item.Y] == 2)
+                {
+                    two++;
+                }
+                else return false;
+
+                //if (Grid[item.X, item.Y] == 0 || Grid[item.X, item.Y] == 9)
+                //{
+                //    return false;
+                //}
+            }
+            return two > 0 ? (bool?)null : true;
+            //return null;
+        }
+
+        private List<Point> GetPath(List<Point> Points)
+        {
+            //x.Reverse();
+            List<Point[]> MaybeList = new List<Point[]>();
+            var sortedPoints = new List<Point>();
+            sortedPoints.Add(Points[0]);
+            Points.RemoveAt(0);
+            while (Points.Count != 0)
+            {
+                bool isInMaybeList = false;
+
+                foreach (var item in MaybeList)
+                {
+                    if (item[0] == sortedPoints[^1] && item[1] == Points[0])
+                    {
+                        isInMaybeList = true;
+                        break;
+                    }
+                }
+
+
+                List<Point> DdaPoints = Point.DDA(sortedPoints[^1], Points[0]);
+                List<Point> DdaPointsRev = Point.DDA(Points[0], sortedPoints[^1]);
+
+                if (IsBorder(DdaPoints) == true || IsBorder(DdaPointsRev) == true || isInMaybeList)
+                {
+                    sortedPoints.Add(Points[0]);
+                    Points.RemoveAt(0);
+
+                    if (sortedPoints.Count > 2)
+                    {
+                        if (Point.GetSlope(sortedPoints[^3], sortedPoints[^2]) == Point.GetSlope(sortedPoints[^2], sortedPoints[^1]))
+                        {
+                            sortedPoints.RemoveAt(sortedPoints.Count - 2);
+                        }
+                    }
+                }
+                else if (IsBorder(DdaPoints) == null)
+                {
+                    MaybeList.Add(new Point[] { sortedPoints[^1], Points[0] });
+                    Points.Add(Points[0]);
+                    Points.RemoveAt(0);
+                }
+                else
+                {
+                    Points.Add(Points[0]);
+                    Points.RemoveAt(0);
+                }
+            }
+
+            if (Point.GetSlope(sortedPoints[^1], sortedPoints[0]) == Point.GetSlope(sortedPoints[^1], sortedPoints[^2]))
+            {
+                sortedPoints.RemoveAt(sortedPoints.Count - 1);
+            }
+
+            return sortedPoints;
         }
     }
 }
