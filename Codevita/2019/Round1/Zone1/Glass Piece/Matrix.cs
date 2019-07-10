@@ -61,7 +61,7 @@ namespace Glass_Piece
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write(Grid[rows, cols]);
                     }
-                    Console.Write(" ");
+                    Console.Write("");
                 }
                 Console.WriteLine();
             }
@@ -130,18 +130,75 @@ namespace Glass_Piece
             MakeShape();
             SetBoundaryLine();
             var corners = GetBoundaryCornerPoints();
-            foreach (Point b in GivenPoints)
+            PutGivenPoints();
+            PutBoundaryPoints(corners);
+            corners.Sort();
+            var path = GetPath(corners);
+            SortClockwise(path);
+            return path;
+        }
+
+        private void SortClockwise(List<Point> points)
+        {
+            GetLeftmostOnTop();
+            SetDirection();
+
+            void SetDirection()
             {
-                Grid[b.X, b.Y] = 6;
+                var leftmost = points[0];
+                points.RemoveAt(0);
+
+                if ((points[0].Y < points[^1].Y) || (points[0].X > points[^1].X && points[0].Y == points[^1].Y))
+                {
+                    // nothing
+                }
+                else
+                {
+                    //acw
+                    points.Reverse();
+                }
+
+                points.Insert(0, leftmost);
             }
+
+            void GetLeftmostOnTop()
+            {
+                int minTopIndex = 0;
+                for (int i = 1; i < points.Count; i++)
+                {
+                    if (points[i].X < points[minTopIndex].X)
+                    {
+                        minTopIndex = i;
+                    }
+                    else if (points[i].X == points[minTopIndex].X && points[i].Y < points[minTopIndex].Y)
+                    {
+                        minTopIndex = i;
+                    }
+                }
+
+                while (minTopIndex != 0)
+                {
+                    var t = points[0];
+                    points.Add(t);
+                    points.RemoveAt(0);
+                    minTopIndex--;
+                }
+            }
+        }
+        private void PutBoundaryPoints(List<Point> corners)
+        {
             foreach (var corner in corners)
             {
                 Grid[corner.X, corner.Y] = 7;
             }
-            corners.Sort();
-            var path = GetPath(corners);
-            return path;
-            //return null;
+        }
+
+        private void PutGivenPoints()
+        {
+            foreach (Point b in GivenPoints)
+            {
+                Grid[b.X, b.Y] = 6;
+            }
         }
 
         private List<Point> GetBoundaryCornerPoints()
@@ -401,6 +458,11 @@ namespace Glass_Piece
                 sortedPoints.RemoveAt(sortedPoints.Count - 1);
             }
 
+            //invert to make graph friendly
+            for (int i = 0; i < sortedPoints.Count; i++)
+            {
+                sortedPoints[i] = sortedPoints[i].Invert();
+            }
             return sortedPoints;
         }
     }

@@ -37,6 +37,10 @@ namespace Glass_Piece
             return !(p1 == p2);
         }
 
+        public Point Invert()
+        {
+            return new Point(Y, X);
+        }
         public static double GetSlope(Point p1, Point p2)
         {
             try
