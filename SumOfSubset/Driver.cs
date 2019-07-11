@@ -33,7 +33,6 @@ namespace SumOfSubset
                     newNodesTask[0] = FindAllSubset(Node.CreateChildNode(null));
                     newNodesTask[1] = FindAllSubset(Node.CreateChildNode(GivenArray[Node.Index]));
 
-
                     Task.WaitAll(newNodesTask);
                 }
                 if (isNodeCompleted(Node))
