@@ -33,18 +33,18 @@ namespace SumOfSubset
                     newNodesTask[0] = FindAllSubset(Node.CreateChildNode(null));
                     newNodesTask[1] = FindAllSubset(Node.CreateChildNode(GivenArray[Node.Index]));
 
-                    if (isNodeCompleted(Node))
-                    {
-                        Subset.Add(Node.CurrentSubset.ToArray());
-                    }
 
                     Task.WaitAll(newNodesTask);
+                }
+                if (isNodeCompleted(Node))
+                {
+                    Subset.Add(Node.CurrentSubset.ToArray());
                 }
             });
         }
 
-        bool isNodeFeasible(Node Node) => Node.CurrentSubset.Sum() <= ReqSum && Node.Index < GivenArray.Length;
+        bool isNodeFeasible(Node node) => node.CurrentSubset.Sum() <= ReqSum && node.Index < GivenArray.Length;
 
-        bool isNodeCompleted(Node Node) => Node.CurrentSubset.Sum() == ReqSum;
+        bool isNodeCompleted(Node node) => node.CurrentSubset.Sum() == ReqSum;
     }
 }
