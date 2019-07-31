@@ -40,6 +40,7 @@ namespace SumOfSubset
                     Subset.Add(Node.CurrentSubset.ToArray());
                 }
             });
+
         }
 
         bool isNodeFeasible(Node node) => node.CurrentSubset.Sum() <= ReqSum && node.Index < GivenArray.Length;
